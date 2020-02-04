@@ -1,37 +1,29 @@
 <template>
-  <div id="app">
-    <section class="logo-wrap">
-      <img class="logo" src="./assets/logo.svg" alt="The Movie DB logo" />
-    </section>
-    <MovieList/>
+  <div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import MovieList from './components/MovieList.vue'
-
 export default {
-  name: 'app',
-  components: {
-    MovieList
-  }
 }
 </script>
 
 <style lang="scss">
 html{
   background-color:#081B23;
-  color:#E3F4FC;
+  color:#fff;
   font-family:"Roboto",Arial, Helvetica, sans-serif;
   overflow-x:hidden;
 }
 
 body{
   overflow-x:hidden;
+  margin: 0;
 }
 
-h1,h2{
-  font-family:"PT Sans Caption", Arial, Helvetica, sans-serif;
+h1,h2,h3{
+  font-family:"Source Sans Pro", Arial, Helvetica, sans-serif;
 }
 
 h1{

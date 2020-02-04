@@ -1,17 +1,22 @@
 <template>
-  <div class="frame">
-    <ul class="movies-list">
-        <li class="movies-list-item" v-for="(movie,index) in movies" :key="index">
-            <a class="movies-list-item-link" :href="'/' + movie.id">
-              <div class="movies-list-item__poster-wrap">
-                <img class="movies-list-item__poster" :title="movie.title" :srcSet="'https://image.tmdb.org/t/p/w185_and_h278_bestv2' + movie.poster_path + ' 1x, https://image.tmdb.org/t/p/w370_and_h556_bestv2' + movie.poster_path + '2x'" :src="'https://image.tmdb.org/t/p/w185_and_h278_bestv2' + movie.poster_path" />
-              </div>
-              <span class="movies-list-item__title">{{movie.title}}</span>
-              <span class="movies-list-item__date">{{movie.release_date | format}}</span>
-              <span class="movies-list-item__score" :class="{high: movie.vote_average > 7,medium:movie.vote_average <= 7 && movie.vote_average > 5, low:movie.vote_average <= 5}">{{ movie.vote_average * 10 }}%</span>
-            </a>
-        </li>
-    </ul>
+  <div>
+    <section class="logo-wrap">
+        <img class="logo" src="../assets/logo.svg" alt="The Movie DB logo" />
+    </section>
+    <div class="frame">
+      <ul class="movies-list">
+          <li class="movies-list-item" v-for="(movie,index) in movies" :key="index">
+              <router-link class="movies-list-item-link" :to="'/movie/' + movie.id">
+                <div class="movies-list-item__poster-wrap">
+                  <img class="movies-list-item__poster" :title="movie.title" :srcSet="'https://image.tmdb.org/t/p/w185_and_h278_bestv2' + movie.poster_path + ' 1x, https://image.tmdb.org/t/p/w370_and_h556_bestv2' + movie.poster_path + '2x'" :src="'https://image.tmdb.org/t/p/w185_and_h278_bestv2' + movie.poster_path" />
+                </div>
+                <span class="movies-list-item__title">{{movie.title}}</span>
+                <span class="movies-list-item__date">{{movie.release_date | format}}</span>
+                <span class="movies-list-item__score" :class="{high: movie.vote_average > 7,medium:movie.vote_average <= 7 && movie.vote_average > 5, low:movie.vote_average <= 5}">{{ movie.vote_average * 10 }}%</span>
+              </router-link>
+          </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -114,7 +119,7 @@ margin-top:45px;
         position:relative;
 
         &:after{
-          background-image: url("/assets/images/movie.svg");
+          background-image: url("/img/movie.d40ff248.svg");
           background-size: 50px;
           background-position: center;
           background-repeat: no-repeat;
