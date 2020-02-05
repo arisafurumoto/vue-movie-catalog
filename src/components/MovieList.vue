@@ -5,23 +5,14 @@
     </section>
     <div class="frame">
       <ul class="movies-list">
-          <li class="movies-list-item" v-for="(movie,index) in movies" :key="index">
-              <router-link class="movies-list-item-link" :to="'/movie/' + movie.id">
-                <div class="movies-list-item__poster-wrap">
-                  <img class="movies-list-item__poster" :title="movie.title" :srcSet="'https://image.tmdb.org/t/p/w185_and_h278_bestv2' + movie.poster_path + ' 1x, https://image.tmdb.org/t/p/w370_and_h556_bestv2' + movie.poster_path + '2x'" :src="'https://image.tmdb.org/t/p/w185_and_h278_bestv2' + movie.poster_path" />
-                </div>
-                <span class="movies-list-item__title">{{movie.title}}</span>
-                <span class="movies-list-item__date">{{movie.release_date | format}}</span>
-                <span class="movies-list-item__score" :class="{high: movie.vote_average > 7,medium:movie.vote_average <= 7 && movie.vote_average > 5, low:movie.vote_average <= 5}">{{ movie.vote_average * 10 }}%</span>
-              </router-link>
-          </li>
+        <movie-card v-for="(movie,index) in movies" :key="index" :id="movie.id" :title="movie.title" :poster="movie.poster_path" :releasedate="movie.release_date" :voteaverage="movie.vote_average"></movie-card>
       </ul>
     </div>
   </div>
 </template>
-
 <script>
 import axios from 'axios'
+import MovieCard from './MovieCard.vue'
 
 export default {
   name: 'MovieList',
@@ -44,24 +35,8 @@ export default {
         this.loading = false
       })
   },
-  filters: {
-    format: function (value) {
-      const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-      ]
-      return months[parseInt(value.slice(5, 7)) - 1] + ' ' + value.slice(0, 4)
-    }
+  components: {
+    MovieCard
   }
 }
 </script>
@@ -119,10 +94,6 @@ margin-top:45px;
         position:relative;
 
         &:after{
-          background-image: url("/img/movie.d40ff248.svg");
-          background-size: 50px;
-          background-position: center;
-          background-repeat: no-repeat;
           content:'';
           height:100%;
           left:0;

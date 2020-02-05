@@ -49,7 +49,7 @@
         <div class="frame">
           <h2>Main Cast</h2>
           <div class="casts">
-            <person-card :key="cast.name" v-for="cast in this.credit.cast.slice(0, 7)" :id="cast.id" :name="cast.name" :character="cast.character"></person-card>
+            <person-card :key="cast.name" v-for="cast in this.credit.cast.slice(0, 5)" :id="cast.id" :name="cast.name" :character="cast.character" :photo="cast.profile_path"></person-card>
           </div>
         </div>
       </div>
@@ -72,24 +72,15 @@ export default {
     }
   },
   mounted () {
-    let one = 'https://api.themoviedb.org/3/movie/' + this.id + '?api_key=6ed12e064b90ae1290fa326ce9e790ff&language=en-US'
-    let two = 'https://api.themoviedb.org/3/movie/' + this.id + '/credits?api_key=6ed12e064b90ae1290fa326ce9e790ff'
-
-    const requestOne = axios.get(one)
-    const requestTwo = axios.get(two)
-
-    axios.all([requestOne, requestTwo]).then(axios.spread((...responses) => {
-      this.movie = responses[0].data
-      setTimeout(() => {
-        this.stroke = 184 * this.movie.vote_average * 0.1
-      }, 300)
-      this.credit = responses[1].data
-    })).catch(error => {
-      console.log(error)
-      this.errored = true
-    }).finally(() => {
-      this.loading = false
-    })
+    axios
+      .get('https://api.themoviedb.org/3/movie/' + this.id + '?api_key=6ed12e064b90ae1290fa326ce9e790ff&language=en-US&append_to_response=credits')
+      .then(response => {
+        this.movie = response.data
+        setTimeout(() => {
+          this.stroke = 184 * this.movie.vote_average * 0.1
+        }, 300)
+        this.credit = response.data.credits
+      })
   },
   components: {
     PersonCard
@@ -274,14 +265,6 @@ export default {
       &:after {
         content: "";
       }
-    }
-  }
-
-  .casts {
-    display: flex;
-
-    @media(max-width:1150px) {
-      flex-wrap: wrap;
     }
   }
 </style>

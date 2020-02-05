@@ -1,5 +1,13 @@
 <template>
   <div>
+    <header>
+      <div class="frame">
+        <router-link :to="'/'"><img src="./assets/logo.svg"/></router-link>
+        <router-link :to="'/movie'">Movies</router-link>
+        <router-link :to="'/tvshow'">TV Shows</router-link>
+        <router-link :to="'/person'">People</router-link>
+      </div>
+    </header>
     <router-view></router-view>
   </div>
 </template>
@@ -20,6 +28,67 @@ html{
 body{
   overflow-x:hidden;
   margin: 0;
+  padding-top: 84px;
+}
+
+header {
+  background: radial-gradient(circle at top right, #031D2B 0%, #052A31 25%, #0c7d56 100%);
+  padding: 15px 0;
+  position: fixed;
+  width: 100%;
+  top:0;
+  z-index: 100;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+
+  .frame {
+    align-items: center;
+    display: flex;
+  }
+
+  a {
+    font-family:"Source Sans Pro", Arial, Helvetica, sans-serif;
+    display: inline-block;
+    color: #fff;
+    margin-right: 30px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    position: relative;
+    opacity: 0.9;
+    transition: opacity .3s ease-in-out;
+
+    &:first-child:before {
+      display: none;
+    }
+
+    &:before {
+      position: absolute;
+      height:2px;
+      width: 0;
+      background-color: #fff;
+      bottom: -5px;
+      content: "";
+      left:0;
+      right:0;
+      border-radius: 2px;
+      transition: width .3s ease-in-out;
+      opacity:0.7;
+      margin: auto;
+    }
+
+    &:hover{
+      opacity: 1;
+
+      &:before{
+        width:100%;
+      }
+    }
+  }
+
+  img {
+    width: 50px;
+    margin-top: 5px;
+  }
 }
 
 h1,h2,h3{

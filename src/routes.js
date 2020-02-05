@@ -1,32 +1,38 @@
+import Home from './components/Home.vue'
 import MovieList from './components/MovieList.vue'
-import MovieParent from './components/MovieParent.vue'
 import Movie from './components/Movie.vue'
-import PersonParent from './components/PersonParent.vue'
+import TVList from './components/TVShowList.vue'
+import TV from './components/TVShow.vue'
+import PersonList from './components/PersonList.vue'
 import Person from './components/Person.vue'
 
 export const routes = [
   {
     path: '',
-    component: MovieList
+    component: Home
   },
   {
     path: '/movie',
-    component: MovieParent,
-    children: [
-      {
-        path: ':id',
-        component: Movie
-      }
-    ]
+    component: MovieList
+  },
+  {
+    path: '/movie/:id',
+    component: Movie
+  },
+  {
+    path: '/tvshow',
+    component: TVList
+  },
+  {
+    path: '/tvshow/:id',
+    component: TV
   },
   {
     path: '/person',
-    component: PersonParent,
-    children: [
-      {
-        path: ':id',
-        component: Person
-      }
-    ]
+    component: PersonList
+  },
+  {
+    path: '/person/:id',
+    component: Person
   }
 ]

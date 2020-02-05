@@ -16,6 +16,30 @@ Vue.component('v-style', {
   }
 })
 
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+]
+
+Vue.filter('year-month', function (value) {
+  return months[parseInt(value.slice(5, 7)) - 1] + ' ' + value.slice(0, 4)
+})
+
+Vue.filter('month-date-year', function (value) {
+  value = new Date(value)
+  return months[value.getMonth()] + ' ' + value.getDate() + ', ' + value.getFullYear()
+})
+
 new Vue({ // eslint-disable-line no-new
   el: '#app',
   router,
