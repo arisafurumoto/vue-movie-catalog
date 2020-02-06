@@ -24,7 +24,7 @@
               <div>
                 <div class="main-credit">
                   <div>
-                    <h4>Director: </h4><span v-for="crew in searchjob('Director')" :key="crew.name">{{ crew.name }}</span>
+                    <h4>Director: </h4><router-link :to="'/person/' + crew.id" v-for="crew in searchjob('Director')" :key="crew.name">{{ crew.name }}</router-link>
                   </div>
                   <div v-if="searchjob('Screenplay').length">
                     <h4>Writers: </h4><span v-for="crew in searchjob('Screenplay')" :key="crew.name">{{ crew.name }}</span>
@@ -257,11 +257,20 @@ export default {
   .main-credit {
     margin-left: 30px;
 
-    span:after {
+    a {
+      color: #fff;
+      text-decoration: none;
+
+      &:hover,&:focus {
+        text-decoration: underline;
+      }
+    }
+
+    a:after {
       content: ", ";
     }
 
-    span:last-child {
+    a:last-child {
       &:after {
         content: "";
       }

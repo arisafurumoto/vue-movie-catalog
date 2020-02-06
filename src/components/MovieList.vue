@@ -5,7 +5,9 @@
     </section>
     <div class="frame">
       <ul class="movies-list">
-        <movie-card v-for="(movie,index) in movies" :key="index" :id="movie.id" :title="movie.title" :poster="movie.poster_path" :releasedate="movie.release_date" :voteaverage="movie.vote_average"></movie-card>
+        <li class="movies-list-item" v-for="(movie,index) in movies" :key="index">
+          <movie-card :id="movie.id" :title="movie.title" :poster="movie.poster_path" :releasedate="movie.release_date" :voteaverage="movie.vote_average"></movie-card>
+        </li>
       </ul>
     </div>
   </div>
@@ -25,7 +27,7 @@ export default {
   },
   mounted () {
     axios
-      .get('https://api.themoviedb.org/3/discover/movie?api_key=6ed12e064b90ae1290fa326ce9e790ff&sort_by=popularity.desc&language=en-US')
+      .get('https://api.themoviedb.org/3/trending/movie/week?api_key=6ed12e064b90ae1290fa326ce9e790ff')
       .then(response => {
         this.movies = response.data.results
       }).catch(error => {
@@ -42,112 +44,7 @@ export default {
 </script>
 
 <style lang="scss">
-.movies{
-margin-top:45px;
-
-&-list{
-  display:flex;
-  flex-wrap:wrap;
-  list-style: none;
-  justify-content: space-between;
-  margin:0 0 50px 0;
-  padding:0;
-
-  &-item{
-    position:relative;
-    width:185px;
-    margin:0 5px;
-
-    @media(max-width:48em)and(min-width:21.875em){
-      width:155px;
-    }
-
-    @media(max-width:21.874em){
-      width:140px;
-    }
-
-    &-link{
-      text-decoration: none;
-
-      &:hover,&:focus{
-        .movies-list-item__poster{
-          opacity:0.15;
-        }
-      }
-    }
-
-    &__poster{
-      display:block;
-      max-width: 100%;
-      position:absolute;
-      top:0;
-      transition: opacity .25s ease-in-out;
-      z-index: 1;
-
-      &-wrap{
-        background:radial-gradient(circle at top right, #029e67 0%,#052A31 70%,#031D2B 100%);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-        border-radius: 8px;
-        margin:10px 0;
-        overflow: hidden;
-        padding-top:150.27%;
-        position:relative;
-
-        &:after{
-          content:'';
-          height:100%;
-          left:0;
-          position:absolute;
-          top:0;
-          width:100%;
-        }
-      }
-    }
-
-    &__title{
-      color:#FFF;
-      display:block;
-      font-size: 1rem;
-      margin:15px 0 10px;
-    }
-
-    &__date{
-      color:#A1D1E5;
-      display:block;
-      font-size: 0.875rem;
-      margin:10px 0 20px;
-    }
-
-    &__score{
-      border-radius:8px;
-      color:#FFF;
-      display:block;
-      font-size: 0.75rem;
-      line-height: 20px;
-      left:5px;
-      position: absolute;
-      text-align: center;
-      top:14px;
-      width:40px;
-      z-index: 2;
-
-      &.high{
-        background-color: #02D277;
-      }
-
-      &.medium{
-        background-color: #4902A2;
-      }
-
-      &.low{
-        background-color: #D0235B;
-      }
-    }
-  }
-}
-}
-
 .home-content{
-transform:translateY(-60px);
+  transform:translateY(-60px);
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="person">
     <div class="small frame">
       <div class="person-photo">
-        <img v-if="person.profile_path !== null" :src="'https://image.tmdb.org/t/p/w276_and_h350_face' + person.profile_path">
+        <img v-if="person.profile_path !== null" :src="'https://image.tmdb.org/t/p/w300_and_h450_bestv2' + person.profile_path">
         <div v-else class="person-photo-placeholder">
           <i class="fas fa-user"></i>
         </div>
@@ -19,7 +19,10 @@
     </div>
     <div class="frame">
       <ul class="movies-list">
-          <movie-card v-for="(movie,index) in knownfor.slice(0,10)" :key="index" :id="movie.id" :title="movie.title" :poster="movie.poster_path" :releasedate="movie.release_date" :voteaverage="movie.vote_average"></movie-card>
+        <li class="movies-list-item" v-for="(show,index) in knownfor.slice(0,10)" :key="index">
+          <movie-card v-if="show.title" :id="show.id" :title="show.title" :poster="show.poster_path" :releasedate="show.release_date" :voteaverage="show.vote_average"></movie-card>
+          <tvshow-card v-else :id="show.id" :title="show.original_name" :poster="show.poster_path" :releasedate="show.first_air_date" :voteaverage="show.vote_average"></tvshow-card>
+        </li>
       </ul>
     </div>
   </div>
@@ -28,6 +31,7 @@
 <script>
 import axios from 'axios'
 import MovieCard from './MovieCard.vue'
+import TvshowCard from './TvshowCard.vue'
 export default {
   data () {
     return {
@@ -37,14 +41,31 @@ export default {
     }
   },
   mounted () {
+    function unique (a, param) {
+      return a.filter(function (item, pos, array) {
+        return array.map(function (mapItem) { return mapItem[param] }).indexOf(item[param]) === pos
+      })
+    }
     axios
-      .get('https://api.themoviedb.org/3/person/' + this.id + '?api_key=6ed12e064b90ae1290fa326ce9e790ff&language=en-US&append_to_response=credits')
+      .get('https://api.themoviedb.org/3/person/' + this.id + '?api_key=6ed12e064b90ae1290fa326ce9e790ff&language=en-US&append_to_response=combined_credits')
       .then(response => {
         this.person = response.data
-        response.data.credits.cast.sort(function (a, b) {
-          return b.popularity - a.popularity
-        })
-        this.knownfor = response.data.credits.cast
+        if (response.data.known_for_department === 'Acting') {
+          response.data.combined_credits.cast.sort(function (a, b) {
+            return b.vote_count - a.vote_count
+          })
+          this.knownfor = response.data.combined_credits.cast.filter(function (value) {
+            if (value.character.indexOf('self') <= -1 && value.character.indexOf('Self') <= -1 && value.character !== '') {
+              console.log(value.character)
+              return value
+            }
+          })
+        } else {
+          response.data.combined_credits.crew.sort(function (a, b) {
+            return b.vote_count - a.vote_count
+          })
+          this.knownfor = unique(response.data.combined_credits.crew, 'title')
+        }
       })
   },
   methods: {
@@ -60,7 +81,8 @@ export default {
     }
   },
   components: {
-    MovieCard
+    MovieCard,
+    TvshowCard
   }
 }
 </script>
@@ -70,6 +92,29 @@ export default {
 
   > .frame{
     display: flex;
+  }
+
+  @media(max-width:730px) {
+    .person-photo img{
+      width: 150px;
+    }
+  }
+
+  @media(max-width:599px) {
+    .small.frame{
+      display:block;
+    }
+
+    .person-photo img{
+      width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+
+    .person-content {
+      margin: 30px 0;
+    }
   }
 
   &-photo {

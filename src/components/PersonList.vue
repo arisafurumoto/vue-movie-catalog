@@ -25,7 +25,7 @@ export default {
   },
   mounted () {
     axios
-      .get('https://api.themoviedb.org/3/person/popular?api_key=6ed12e064b90ae1290fa326ce9e790ff&language=en-US&page=1')
+      .get('https://api.themoviedb.org/3/trending/person/week?api_key=6ed12e064b90ae1290fa326ce9e790ff')
       .then(response => {
         response.data.results.sort(function (a, b) {
           return b.popularity - a.popularity

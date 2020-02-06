@@ -2,7 +2,7 @@
   <div class="card">
     <router-link class="card-link" :to="'/person/' + id">
       <div class="card-media">
-        <img v-if="photo !== null" class="card__img" :src="'https://image.tmdb.org/t/p/w276_and_h350_face' + photo">
+        <img v-if="photo !== null" class="card__img" :src="'https://image.tmdb.org/t/p/w300_and_h450_bestv2' + photo">
         <i class="fas fa-user"></i>
       </div>
       <div class="card-content">
@@ -95,7 +95,7 @@ export default {
   &-media {
     background:radial-gradient(circle at top right, #029e67 0%,#052A31 70%,#031D2B 100%);
     position: relative;
-    padding-top: 127%;
+    padding-top: 150%;
 
     i {
       position: absolute;

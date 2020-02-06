@@ -1,8 +1,8 @@
 import Home from './components/Home.vue'
 import MovieList from './components/MovieList.vue'
 import Movie from './components/Movie.vue'
-import TVList from './components/TVShowList.vue'
-import TV from './components/TVShow.vue'
+import TvList from './components/TvshowList.vue'
+import Tv from './components/Tvshow.vue'
 import PersonList from './components/PersonList.vue'
 import Person from './components/Person.vue'
 
@@ -21,11 +21,11 @@ export const routes = [
   },
   {
     path: '/tvshow',
-    component: TVList
+    component: TvList
   },
   {
     path: '/tvshow/:id',
-    component: TV
+    component: Tv
   },
   {
     path: '/person',
