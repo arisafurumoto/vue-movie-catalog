@@ -1,29 +1,32 @@
 <template>
   <div class="person">
-    <div class="small frame">
-      <div class="person-photo">
-        <img v-if="person.profile_path !== null" :src="'https://image.tmdb.org/t/p/w300_and_h450_bestv2' + person.profile_path">
-        <div v-else class="person-photo-placeholder">
-          <i class="fas fa-user"></i>
+    <div v-show="loading" class="loader"></div>
+    <div v-if="!loading">
+      <div class="small frame">
+        <div class="person-photo">
+          <img v-if="person.profile_path !== null" :src="'https://image.tmdb.org/t/p/w300_and_h450_bestv2' + person.profile_path">
+          <div v-else class="person-photo-placeholder">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+        <div class="person-content">
+          <h1>{{ person.name }}</h1>
+          <span class="person-content-data"><h3 class="person-content-data__title">Born:</h3>{{ person.birthday | month-date-year }} in {{ person.place_of_birth }} ({{ getAge(person.birthday) }})</span>
+          <h3>Biography</h3>
+          <p>{{ person.biography }}</p>
         </div>
       </div>
-      <div class="person-content">
-        <h1>{{ person.name }}</h1>
-        <span class="person-content-data"><h3 class="person-content-data__title">Born:</h3>{{ person.birthday | month-date-year }} in {{ person.place_of_birth }} ({{ getAge(person.birthday) }})</span>
-        <h3>Biography</h3>
-        <p>{{ person.biography }}</p>
+      <div class="frame">
+        <h2>Known For</h2>
       </div>
-    </div>
-    <div class="frame">
-      <h2>Known For</h2>
-    </div>
-    <div class="frame">
-      <ul class="movies-list">
-        <li class="movies-list-item" v-for="(show,index) in knownfor.slice(0,10)" :key="index">
-          <movie-card v-if="show.title" :id="show.id" :title="show.title" :poster="show.poster_path" :releasedate="show.release_date" :voteaverage="show.vote_average"></movie-card>
-          <tvshow-card v-else :id="show.id" :title="show.original_name" :poster="show.poster_path" :releasedate="show.first_air_date" :voteaverage="show.vote_average"></tvshow-card>
-        </li>
-      </ul>
+      <div class="frame">
+        <ul class="movies-list">
+          <li class="movies-list-item" v-for="(show,index) in knownfor.slice(0,10)" :key="index">
+            <movie-card v-if="show.title" :id="show.id" :title="show.title" :poster="show.poster_path" :releasedate="show.release_date" :voteaverage="show.vote_average"></movie-card>
+            <tvshow-card v-else :id="show.id" :title="show.original_name" :poster="show.poster_path" :releasedate="show.first_air_date" :voteaverage="show.vote_average"></tvshow-card>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -37,7 +40,9 @@ export default {
     return {
       id: this.$route.params.id,
       person: null,
-      knownfor: null
+      knownfor: null,
+      loading: true,
+      errored: false
     }
   },
   mounted () {
@@ -55,8 +60,7 @@ export default {
             return b.vote_count - a.vote_count
           })
           this.knownfor = response.data.combined_credits.cast.filter(function (value) {
-            if (value.character.indexOf('self') <= -1 && value.character.indexOf('Self') <= -1 && value.character !== '') {
-              console.log(value.character)
+            if (value.character !== undefined && value.character.indexOf('self') <= -1 && value.character.indexOf('Self') <= -1 && value.character !== '') {
               return value
             }
           })
@@ -66,6 +70,11 @@ export default {
           })
           this.knownfor = unique(response.data.combined_credits.crew, 'title')
         }
+      }).catch(error => {
+        console.log(error)
+        this.errored = true
+      }).finally(() => {
+        this.loading = false
       })
   },
   methods: {
@@ -90,7 +99,7 @@ export default {
 .person {
   padding: 50px 0;
 
-  > .frame{
+  .frame{
     display: flex;
   }
 

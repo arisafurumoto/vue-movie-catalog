@@ -4,6 +4,8 @@
         <img class="logo" src="../assets/logo.svg" alt="The Movie DB logo" />
     </section>
     <div class="frame">
+      <search :category="'People'"></search>
+      <div v-show="loading" class="loader"></div>
       <div class="casts">
         <person-card :key="cast.name" v-for="cast in people" :id="cast.id" :name="cast.name" :knowntv="cast.known_for[0].original_name" :knownmovie="cast.known_for[0].title" :photo="cast.profile_path"></person-card>
       </div>
@@ -13,6 +15,7 @@
 <script>
 import axios from 'axios'
 import PersonCard from './PersonCard.vue'
+import Search from './Search.vue'
 
 export default {
   name: 'PersonList',
@@ -39,7 +42,8 @@ export default {
       })
   },
   components: {
-    PersonCard
+    PersonCard,
+    Search
   }
 }
 </script>

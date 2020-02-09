@@ -14,6 +14,7 @@
 
 <script>
 export default {
+  
 }
 </script>
 
@@ -29,6 +30,7 @@ body{
   overflow-x:hidden;
   margin: 0;
   padding-top: 84px;
+  min-height: 95vh;
 }
 
 header {

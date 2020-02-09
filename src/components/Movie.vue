@@ -1,59 +1,64 @@
 <template>
-    <section class="movie">
-      <v-style>
-        .movie-content:before {
-          background-image: url('https://image.tmdb.org/t/p/original{{ movie.backdrop_path }}');
-        }
-      </v-style>
-      <div class="movie-content">
-        <div class="frame small">
-          <div class="movie-content-poster">
-            <img class="movie-content-poster__img" :srcSet="'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + movie.poster_path + ' 1x, https://image.tmdb.org/t/p/w600_and_h900_bestv2/' + movie.poster_path + ' 2x'" :src="'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + movie.poster_path" :alt="movie.title + 'poster'" />
-          </div>
-          <div class="movie-content-header">
-            <h1 class="movie-content-header__title">{{ movie.title }} <span class="movie-content-header__title--year"> ({{ movie.release_date | year }})</span></h1>
-            <div class="movie-content-header-row">
-              <div class="gauge">
-                <svg class="gauge-svg" width="68px" height="68px">
-                  <circle class="gauge-svg-circle-bg" cx="34" cy="34" r="30px" stroke-dasharray="300, 20000"></circle>
-                  <circle :class="{'high': movie.vote_average > 7,'medium':movie.vote_average <= 7 && movie.vote_average > 5, 'low':movie.vote_average <= 5}" class="gauge-svg-circle" cx="34" cy="34" r="30px" :stroke-dasharray="stroke + ', 20000'"></circle>
-                </svg>
-                <span class="gauge__score">{{ movie.vote_average * 10 }}</span>
-                <span class="gauge__title">User score</span>
+  <div>
+    <div v-show="loading" class="loader"></div>
+    <div v-if="!loading">
+      <section class="movie">
+        <v-style>
+          .movie-content:before {
+            background-image: url('https://image.tmdb.org/t/p/original{{ movie.backdrop_path }}');
+          }
+        </v-style>
+        <div class="movie-content">
+          <div class="frame small">
+            <div class="movie-content-poster">
+              <img class="movie-content-poster__img" :srcSet="'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + movie.poster_path + ' 1x, https://image.tmdb.org/t/p/w600_and_h900_bestv2/' + movie.poster_path + ' 2x'" :src="'https://image.tmdb.org/t/p/w300_and_h450_bestv2/' + movie.poster_path" :alt="movie.title + 'poster'" />
+            </div>
+            <div class="movie-content-header">
+              <h1 class="movie-content-header__title">{{ movie.title }} <span class="movie-content-header__title--year"> ({{ movie.release_date | year }})</span></h1>
+              <div class="movie-content-header-row">
+                <div class="gauge">
+                  <svg class="gauge-svg" width="68px" height="68px">
+                    <circle class="gauge-svg-circle-bg" cx="34" cy="34" r="30px" stroke-dasharray="300, 20000"></circle>
+                    <circle :class="{'high': movie.vote_average > 7,'medium':movie.vote_average <= 7 && movie.vote_average > 5, 'low':movie.vote_average <= 5}" class="gauge-svg-circle" cx="34" cy="34" r="30px" :stroke-dasharray="stroke + ', 20000'"></circle>
+                  </svg>
+                  <span class="gauge__score">{{ movie.vote_average * 10 }}</span>
+                  <span class="gauge__title">User score</span>
+                </div>
+                <div>
+                  <div class="main-credit">
+                    <div>
+                      <h4>Director: </h4><router-link :to="'/person/' + crew.id" v-for="crew in searchjob('Director')" :key="crew.name">{{ crew.name }}</router-link>
+                    </div>
+                    <div v-if="searchjob('Screenplay').length">
+                      <h4>Writers: </h4><span v-for="crew in searchjob('Screenplay')" :key="crew.name">{{ crew.name }}</span>
+                    </div>
+                  </div>
+                  <div class="genres">
+                    <h4>Genres:</h4>
+                    <ul class="genres-list">
+                      <li class="genres-list-item" :key="genre.id" v-for="genre in movie.genres">{{ genre.name }}</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
               <div>
-                <div class="main-credit">
-                  <div>
-                    <h4>Director: </h4><router-link :to="'/person/' + crew.id" v-for="crew in searchjob('Director')" :key="crew.name">{{ crew.name }}</router-link>
-                  </div>
-                  <div v-if="searchjob('Screenplay').length">
-                    <h4>Writers: </h4><span v-for="crew in searchjob('Screenplay')" :key="crew.name">{{ crew.name }}</span>
-                  </div>
-                </div>
-                <div class="genres">
-                  <h4>Genres:</h4>
-                  <ul class="genres-list">
-                    <li class="genres-list-item" :key="genre.id" v-for="genre in movie.genres">{{ genre.name }}</li>
-                  </ul>
-                </div>
+                <h3>Overview</h3>
+                <p class="movie-content-header__intro">{{ movie.overview }}</p>
               </div>
             </div>
-            <div>
-              <h3>Overview</h3>
-              <p class="movie-content-header__intro">{{ movie.overview }}</p>
+          </div>
+        </div>
+        <div class="movie-cast">
+          <div class="frame">
+            <h2>Main Cast</h2>
+            <div class="casts">
+              <person-card :key="cast.name" v-for="cast in this.credit.cast.slice(0, 5)" :id="cast.id" :name="cast.name" :character="cast.character" :photo="cast.profile_path"></person-card>
             </div>
           </div>
         </div>
-      </div>
-      <div class="movie-cast">
-        <div class="frame">
-          <h2>Main Cast</h2>
-          <div class="casts">
-            <person-card :key="cast.name" v-for="cast in this.credit.cast.slice(0, 5)" :id="cast.id" :name="cast.name" :character="cast.character" :photo="cast.profile_path"></person-card>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -68,7 +73,9 @@ export default {
       credit: null,
       stroke: 0,
       director: 'Director',
-      screenplay: 'Screenplay'
+      screenplay: 'Screenplay',
+      loading: true,
+      errored: false
     }
   },
   mounted () {
@@ -76,10 +83,15 @@ export default {
       .get('https://api.themoviedb.org/3/movie/' + this.id + '?api_key=6ed12e064b90ae1290fa326ce9e790ff&language=en-US&append_to_response=credits')
       .then(response => {
         this.movie = response.data
+        this.credit = response.data.credits
+      }).catch(error => {
+        console.log(error)
+        this.errored = true
+      }).finally(() => {
+        this.loading = false
         setTimeout(() => {
           this.stroke = 184 * this.movie.vote_average * 0.1
         }, 300)
-        this.credit = response.data.credits
       })
   },
   components: {
