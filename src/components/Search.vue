@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <div class="search-form" :class="{'nothome':category}">
+    <div class="search-form" :class="{short:category == 'Movies' || category == 'People', long:category == 'TV Shows'}">
       <label class="search-label visually-hidden" for="search">
         <span>Search</span>
       </label>
@@ -11,10 +11,10 @@
       </select>
       <i v-if="!category" class="fas fa-chevron-down"></i>
       <div v-if="category" class="search-category">{{ category }}</div>
-      <input id="search" type="text" autocomplete="off" name="search" placeholder="Search" v-model="keyword" @keyup="autocomplete" @keypress.enter="search">
-      <button class="button" type="button" value="Search" @click="search"><i class="fas fa-search"></i></button>
+      <input id="search" type="text" autocomplete="off" name="search" placeholder="Search" v-model="keyword" @keydown="autocomplete" @keydown.enter="search">
+      <button class="button" ref="button" type="button" value="Search" @click="search"><i class="fas fa-search"></i></button>
     </div>
-    <ul class="autocomplete">
+    <ul class="autocomplete" v-closable="{exclude: ['button'], handler:'close'}" v-show="showcomplete">
       <li v-for="option in options" :key="option.id" class="autocomplete-item">
         <a v-if="option.media_type=='movie'" :href="'/movie/' + option.id">
           <i class="fas fa-film"></i>
@@ -42,15 +42,16 @@ export default {
       catoption: 'movie',
       options: null,
       loading: true,
-      errored: false
+      errored: false,
+      showcomplete: false
     }
   },
   props: ['category'],
   filters: {
     categoryConvert: function (value) {
-      if (value == "Movies") {
+      if (value === 'Movies') {
         return 'movie'
-      } else if (value == "TV Shows") {
+      } else if (value === 'TV Shows') {
         return 'tvshow'
       } else {
         return 'person'
@@ -58,8 +59,13 @@ export default {
     }
   },
   methods: {
-    autocomplete: function () {
-      if (this.keyword.length > 2) {
+    close: function () {
+      this.options = []
+      this.showcomplete = false
+    },
+    autocomplete: function (event) {
+      if (this.keyword.length > 2 && event.key !== 'Enter') {
+        this.showcomplete = true
         axios
           .get('https://api.themoviedb.org/3/search/multi?api_key=6ed12e064b90ae1290fa326ce9e790ff&language=en-US&query=' + this.keyword + '&page=1&include_adult=false')
           .then(response => {
@@ -72,12 +78,16 @@ export default {
             this.errored = true
           }).finally(() => {
             this.loading = false
+            this.showcomplete = true
           })
+      } else {
+        this.close()
       }
     },
     search: function () {
-      if(this.category) {
-        this.$router.push('/' + this.$options.filters.categoryConvert(this.category)+ '?search=' + this.keyword)
+      this.close()
+      if (this.category) {
+        this.$router.push('/' + this.$options.filters.categoryConvert(this.category) + '?search=' + this.keyword)
       } else {
         this.$router.push('/' + this.catoption + '?search=' + this.keyword)
       }
@@ -90,13 +100,21 @@ export default {
   margin:auto;
   max-width:650px;
   transform: translateY(-40px);
+  position:relative;
+  z-index: 5;
 
   &-form {
     position:relative;
 
-    &.nothome {
+    &.short{
       input[type=text] {
-        padding-left: 90px;
+        padding-left: 85px;
+      }
+    }
+
+    &.long {
+      input[type=text] {
+        padding-left: 105px;
       }
     }
   }
@@ -169,8 +187,7 @@ export default {
     padding:0;
     position:absolute;
     right:0;
-    top:50%;
-    transform:translateY(-50%);
+    top:0;
     width:44px;
     border-radius: 0% 50% 50% 0;
     cursor: pointer;

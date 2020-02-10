@@ -8,15 +8,17 @@
       <div class="card-content">
         <span class="card-content__title">{{ name }}</span>
         <span v-if="character" class="card-content__title--sub">as "{{ character }}"</span>
-        <span v-if="knowntv" class="card-content__title--sub">"{{ knowntv }}"</span>
-        <span v-if="knownmovie" class="card-content__title--sub">"{{ knownmovie }}"</span>
+        <div v-if="knownfor.length > 0">
+          <span v-if="knownfor[0].media_type == 'movie'" class="card-content__title--sub">"{{ knownfor[0].title }}"</span>
+          <span v-if="knownfor[0].media_type == 'tv'" class="card-content__title--sub">"{{ knownfor[0].name }}"</span>
+        </div>
       </div>
     </router-link>
   </div>
 </template>
 <script>
 export default {
-  props: ['id', 'name', 'character', 'photo', 'knowntv', 'knownmovie']
+  props: ['id', 'name', 'character', 'photo', 'knownfor']
 }
 </script>
 <style lang="scss">
